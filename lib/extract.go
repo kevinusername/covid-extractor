@@ -49,6 +49,7 @@ func countyData(countyName, fileName string) (row, bool) {
 			deaths, _ := strconv.ParseInt(record[8], 10, 64)
 			recovered, _ := strconv.ParseInt(record[9], 10, 64)
 			updated, err := time.Parse(datePattern, record[4])
+			updated = updated.In(time.Local)
 			if err != nil {
 				continue
 			}
