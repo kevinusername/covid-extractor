@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	dailyDataPath    = "data/csse_covid_19_data/csse_covid_19_daily_reports/"
-	santaBarbaraFIPS = "06083"
+	dailyDataPath = "data/csse_covid_19_data/csse_covid_19_daily_reports/"
+	county        = "Santa Barbara"
 )
 
 func main() {
-	files, err := ioutil.ReadDir("data/csse_covid_19_data/csse_covid_19_daily_reports")
+	files, err := ioutil.ReadDir(dailyDataPath)
 	if err != nil {
 		log.Fatal("Error reading data directory")
 	}
@@ -22,14 +22,15 @@ func main() {
 	countyRecords := make([]row, 0, 20)
 	for _, file := range files {
 		if name := file.Name(); strings.HasSuffix(name, ".csv") {
-			cData, ok := countyData(santaBarbaraFIPS, dailyDataPath+name)
+			cData, ok := countyData(county, dailyDataPath+name)
 			if ok {
 				countyRecords = append(countyRecords, cData)
 			}
 		}
 	}
 
-	outFile, _ := os.OpenFile(santaBarbaraFIPS+".json", os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
+	outFileName := "out/" + strings.ReplaceAll(county, " ", "") + ".json"
+	outFile, _ := os.OpenFile(outFileName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
 	defer outFile.Close()
 	enc := json.NewEncoder(outFile)
 

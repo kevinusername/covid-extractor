@@ -19,10 +19,10 @@ type row = struct {
 const datePattern = "2006-01-02 15:04:05"
 
 func checkHeader(h []string) bool {
-	return h[0] == "FIPS" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
+	return h[1] == "Admin2" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
 }
 
-func countyData(fips, fileName string) (row, bool) {
+func countyData(countyName, fileName string) (row, bool) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		log.Fatalf("Error opening file: %s", fileName)
@@ -44,21 +44,16 @@ func countyData(fips, fileName string) (row, bool) {
 			log.Fatal("Error reading csv file")
 		}
 
-		if record[0] == fips {
+		if record[1] == countyName {
 			confirmed, _ := strconv.ParseInt(record[7], 10, 64)
 			deaths, _ := strconv.ParseInt(record[8], 10, 64)
 			recovered, _ := strconv.ParseInt(record[9], 10, 64)
 			updated, err := time.Parse(datePattern, record[4])
 			if err != nil {
-				log.Fatalf("Invalid date: %s", record[4])
+				continue
 			}
 
-			cRow := row{
-				Updated:   updated,
-				Confirmed: confirmed,
-				Deaths:    deaths,
-				Recovered: recovered,
-			}
+			cRow := row{Updated: updated, Confirmed: confirmed, Deaths: deaths, Recovered: recovered}
 			return cRow, true
 		}
 	}
