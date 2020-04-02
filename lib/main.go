@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -31,6 +32,9 @@ func main() {
 			}
 		}
 	}
+	sort.Slice(countyRecords, func(i, j int) bool {
+		return countyRecords[i].Updated.After(countyRecords[j].Updated)
+	})
 
 	jsonName := "out/json/" + strings.ReplaceAll(county, " ", "") + ".json"
 	outJSON, _ := os.OpenFile(jsonName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
