@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -27,5 +28,10 @@ func main() {
 			}
 		}
 	}
-	fmt.Println(countyRecords)
+
+	outFile, _ := os.OpenFile(santaBarbaraFIPS+".json", os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.ModePerm)
+	defer outFile.Close()
+	enc := json.NewEncoder(outFile)
+
+	enc.Encode(countyRecords)
 }

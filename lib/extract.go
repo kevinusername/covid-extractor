@@ -6,14 +6,17 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 type row = struct {
-	County    string
+	Updated   time.Time
 	Confirmed int64
 	Deaths    int64
 	Recovered int64
 }
+
+const datePattern = "2006-01-02 15:04:05"
 
 func checkHeader(h []string) bool {
 	return h[0] == "FIPS" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
@@ -45,9 +48,13 @@ func countyData(fips, fileName string) (row, bool) {
 			confirmed, _ := strconv.ParseInt(record[7], 10, 64)
 			deaths, _ := strconv.ParseInt(record[8], 10, 64)
 			recovered, _ := strconv.ParseInt(record[9], 10, 64)
+			updated, err := time.Parse(datePattern, record[4])
+			if err != nil {
+				log.Fatalf("Invalid date: %s", record[4])
+			}
 
 			cRow := row{
-				County:    record[1],
+				Updated:   updated,
 				Confirmed: confirmed,
 				Deaths:    deaths,
 				Recovered: recovered,
