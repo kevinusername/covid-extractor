@@ -15,6 +15,10 @@ type row = struct {
 	Recovered int64
 }
 
+func checkHeader(h []string) bool {
+	return h[0] == "FIPS" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
+}
+
 func countyData(fips, fileName string) (row, bool) {
 	f, err := os.Open(fileName)
 	if err != nil {
@@ -23,6 +27,10 @@ func countyData(fips, fileName string) (row, bool) {
 	defer f.Close()
 
 	r := csv.NewReader(f)
+	record, err := r.Read()
+	if err != nil || !checkHeader(record) {
+		return row{}, false
+	}
 
 	for {
 		record, err := r.Read()
