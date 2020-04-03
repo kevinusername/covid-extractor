@@ -14,10 +14,15 @@ import (
 
 const (
 	dailyDataPath = "data/csse_covid_19_data/csse_covid_19_daily_reports/"
-	county        = "Santa Barbara"
 )
 
 func main() {
+	args := os.Args[1:]
+	if len(args) == 0 {
+		log.Fatal("Must provide counties as arguements")
+	}
+	county := args[0]
+
 	files, err := ioutil.ReadDir(dailyDataPath)
 	if err != nil {
 		log.Fatal("Error reading data directory")
