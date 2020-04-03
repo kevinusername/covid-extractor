@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -29,14 +30,32 @@ func main() {
 	}
 
 	countyRecords := make([]row, 0, 20)
+	var wg sync.WaitGroup
+	queue := make(chan row, 1)
+
 	for _, file := range files {
 		if name := file.Name(); strings.HasSuffix(name, ".csv") {
-			cData, ok := countyData(county, dailyDataPath+name)
-			if ok {
-				countyRecords = append(countyRecords, cData)
-			}
+			wg.Add(1)
+			go func() {
+				cData, ok := countyData(county, dailyDataPath+name)
+				if ok {
+					queue <- cData
+				} else {
+					wg.Done()
+				}
+			}()
 		}
 	}
+
+	go func() {
+		for r := range queue {
+			countyRecords = append(countyRecords, r)
+			wg.Done()
+		}
+	}()
+
+	wg.Wait()
+
 	sort.Slice(countyRecords, func(i, j int) bool {
 		return countyRecords[i].Updated.After(countyRecords[j].Updated)
 	})
