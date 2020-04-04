@@ -23,7 +23,7 @@ type County struct {
 }
 
 func (c *County) FromFiles(files []os.FileInfo) {
-	countyRecords := make([]Row, 0, 20)
+	c.Records = make([]Row, 0, 20)
 	var wg sync.WaitGroup
 	queue := make(chan Row, 1)
 
@@ -43,15 +43,16 @@ func (c *County) FromFiles(files []os.FileInfo) {
 
 	go func() {
 		for r := range queue {
-			countyRecords = append(countyRecords, r)
+			c.Records = append(c.Records, r)
 			wg.Done()
 		}
 	}()
 
 	wg.Wait()
+}
 
-	sort.Slice(countyRecords, func(i, j int) bool {
-		return countyRecords[i].Updated.After(countyRecords[j].Updated)
+func (c *County) Sort() {
+	sort.Slice(c.Records, func(i, j int) bool {
+		return c.Records[i].Updated.After(c.Records[j].Updated)
 	})
-	c.Records = countyRecords
 }

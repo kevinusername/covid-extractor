@@ -22,6 +22,7 @@ func main() {
 
 	c := county.County{Name: countyName}
 	c.FromFiles(files)
+	c.Sort()
 
 	c.WriteJSON()
 	c.WriteCSV()
