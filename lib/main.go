@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/kevinusername/SB-COVID-19/lib/county"
 )
@@ -21,12 +22,19 @@ func main() {
 		log.Fatal("Error reading data directory")
 	}
 
+	var wg sync.WaitGroup
+	wg.Add(len(args))
 	for _, cName := range args {
-		c := county.County{Name: cName}
-		c.FromFiles(files)
-		c.Sort()
+		go func(cName string) {
+			c := county.County{Name: cName}
+			c.FromFiles(files)
+			c.Sort()
 
-		c.WriteJSON()
-		c.WriteCSV()
+			c.WriteJSON()
+			c.WriteCSV()
+
+			wg.Done()
+		}(cName)
 	}
+	wg.Wait()
 }
