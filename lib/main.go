@@ -8,22 +8,25 @@ import (
 	"github.com/kevinusername/SB-COVID-19/lib/county"
 )
 
+var defaultCounties = []string{"Santa Barbara", "Los Angeles", "New York City"}
+
 func main() {
 	args := os.Args[1:]
 	if len(args) == 0 {
-		log.Fatal("Must provide counties as arguements")
+		args = defaultCounties
 	}
-	countyName := args[0]
 
 	files, err := ioutil.ReadDir(county.DailyDataPath)
 	if err != nil {
 		log.Fatal("Error reading data directory")
 	}
 
-	c := county.County{Name: countyName}
-	c.FromFiles(files)
-	c.Sort()
+	for _, cName := range args {
+		c := county.County{Name: cName}
+		c.FromFiles(files)
+		c.Sort()
 
-	c.WriteJSON()
-	c.WriteCSV()
+		c.WriteJSON()
+		c.WriteCSV()
+	}
 }
