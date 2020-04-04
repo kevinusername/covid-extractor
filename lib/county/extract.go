@@ -1,4 +1,4 @@
-package main
+package county
 
 import (
 	"encoding/csv"
@@ -9,20 +9,13 @@ import (
 	"time"
 )
 
-type row = struct {
-	Updated   time.Time
-	Confirmed int64
-	Deaths    int64
-	Recovered int64
-}
-
 const datePattern = "2006-01-02 15:04:05"
 
 func checkHeader(h []string) bool {
 	return h[1] == "Admin2" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
 }
 
-func countyData(countyName, fileName string) (row, bool) {
+func countyData(countyName, fileName string) (Row, bool) {
 	f, err := os.Open(fileName)
 	if err != nil {
 		log.Fatalf("Error opening file: %s", fileName)
@@ -32,7 +25,7 @@ func countyData(countyName, fileName string) (row, bool) {
 	r := csv.NewReader(f)
 	record, err := r.Read()
 	if err != nil || !checkHeader(record) {
-		return row{}, false
+		return Row{}, false
 	}
 
 	for {
@@ -54,9 +47,9 @@ func countyData(countyName, fileName string) (row, bool) {
 				continue
 			}
 
-			cRow := row{Updated: updated, Confirmed: confirmed, Deaths: deaths, Recovered: recovered}
+			cRow := Row{Updated: updated, Confirmed: confirmed, Deaths: deaths, Recovered: recovered}
 			return cRow, true
 		}
 	}
-	return row{}, false
+	return Row{}, false
 }
