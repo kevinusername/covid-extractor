@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -44,14 +43,20 @@ func oldmain() {
 var states = []string{"Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Federated States of Micronesia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Marshall Islands", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virgin Island", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"}
 
 func main() {
+	sCapitaRecords := make([]state.CapitaRecord, 0, 50)
 	for _, s := range states {
 		stateRecord, ok := state.Extract(s, "04-06-2020.csv")
 		if ok {
-			// fmt.Println(stateRecord)
 			c, d, ok := state.PerCapita(stateRecord)
 			if ok {
-				fmt.Printf("%s: Confirmed:%f, Deaths:%f\n", s, c, d)
+				sCapitaRecords = append(sCapitaRecords, state.CapitaRecord{
+					State:     s,
+					Confirmed: c,
+					Deaths:    d,
+				})
 			}
 		}
 	}
+	state.Sort(sCapitaRecords)
+	state.WriteCSV(sCapitaRecords)
 }
