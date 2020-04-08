@@ -9,7 +9,10 @@ import (
 	"time"
 )
 
-const datePattern = "2006-01-02 15:04:05"
+const (
+	datePattern    = "2006-01-02 15:04:05"
+	altDatePattern = "1/2/06 15:04"
+)
 
 func checkHeader(h []string) bool {
 	return h[1] == "Admin2" && h[7] == "Confirmed" && h[8] == "Deaths" && h[9] == "Recovered"
@@ -20,6 +23,10 @@ func parseRecord(record []string) (Row, bool) {
 	deaths, e2 := strconv.ParseInt(record[8], 10, 64)
 	recovered, e3 := strconv.ParseInt(record[9], 10, 64)
 	updated, e4 := time.Parse(datePattern, record[4])
+	// Manual fix for inconsistent source data date formatting
+	if e4 != nil {
+		updated, e4 = time.Parse(altDatePattern, record[4])
+	}
 	if e1 != nil || e2 != nil || e3 != nil || e4 != nil {
 		return Row{}, false
 	}
