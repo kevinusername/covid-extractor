@@ -1,5 +1,41 @@
 [
   {
+    "Updated": "2020-04-20T16:36:47-07:00",
+    "Confirmed": 13823,
+    "Deaths": 619,
+    "Recovered": 0
+  },
+  {
+    "Updated": "2020-04-19T16:41:01-07:00",
+    "Confirmed": 12341,
+    "Deaths": 600,
+    "Recovered": 0
+  },
+  {
+    "Updated": "2020-04-18T15:32:47-07:00",
+    "Confirmed": 12021,
+    "Deaths": 576,
+    "Recovered": 0
+  },
+  {
+    "Updated": "2020-04-17T16:30:52-07:00",
+    "Confirmed": 11400,
+    "Deaths": 497,
+    "Recovered": 0
+  },
+  {
+    "Updated": "2020-04-16T16:30:51-07:00",
+    "Confirmed": 10854,
+    "Deaths": 457,
+    "Recovered": 0
+  },
+  {
+    "Updated": "2020-04-15T15:56:51-07:00",
+    "Confirmed": 10517,
+    "Deaths": 405,
+    "Recovered": 0
+  },
+  {
     "Updated": "2020-04-14T16:33:31-07:00",
     "Confirmed": 10047,
     "Deaths": 360,
